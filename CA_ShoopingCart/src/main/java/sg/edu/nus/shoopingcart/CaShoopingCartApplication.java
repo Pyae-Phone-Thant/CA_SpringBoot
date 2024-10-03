@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CaShoopingCartApplication {
 
 	public static void main(String[] args) {
-		System.out.print(false);
 		SpringApplication.run(CaShoopingCartApplication.class, args);
 	}
 

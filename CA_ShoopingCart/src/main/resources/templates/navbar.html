@@ -1,0 +1,65 @@
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Shopping Cart</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="/css/styles.css"> <!-- Link to your custom styles -->
+</head>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">
+        <img src="/images/logo.png" alt="Logo" style="width: 100px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/products">Products</a>
+            </li>
+        </ul>
+        <!-- Dynamic Search Bar -->
+        <form class="form-inline my-2 my-lg-0" id="searchForm">
+            <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        </form>
+        <ul id="searchResults" class="list-group position-absolute" style="z-index: 1000;"></ul>
+    </div>
+</nav>
+<script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const query = this.value;
+
+        if (query.length > 2) {  // Only start searching if the input has more than 2 characters
+            fetch(`/products/search?keyword=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsContainer = document.getElementById('searchResults');
+                    resultsContainer.innerHTML = ''; // Clear previous results
+
+                    if (data.length > 0) {
+                        data.forEach(product => {
+                            const resultItem = document.createElement('li');
+                            resultItem.classList.add('list-group-item', 'list-group-item-action');
+                            resultItem.innerHTML = `
+                                <a href="/products/${product.product_id}">
+                                    <img src="${product.image_url}" alt="Product Image" style="width: 50px; height: 50px;">
+                                    ${product.product_name} - $${product.sale_price}
+                                </a>
+                            `;
+                            resultsContainer.appendChild(resultItem);
+                        });
+                    } else {
+                        const noResultItem = document.createElement('li');
+                        noResultItem.classList.add('list-group-item');
+                        noResultItem.innerText = 'No results found';
+                        resultsContainer.appendChild(noResultItem);
+                    }
+                });
+        } else {
+            document.getElementById('searchResults').innerHTML = ''; // Clear results if query is too short
+        }
+    });
+</script>
