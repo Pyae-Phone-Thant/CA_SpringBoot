@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Checkout Page</title>
+	<th:block th:replace="fragments :: head"></th:block>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f5f5f5;
+			margin: 0;
+			padding: 20px;
+		}
+
+		.cart-progress-bar {
+			display: flex;
+			justify-content: space-between;
+			padding: 15px;
+			background-color: #e0e0e0;
+			border-radius: 8px;
+			margin-bottom: 20px;
+			text-align: center;
+		}
+
+		.cart-progress-step {
+			flex: 1;
+			padding: 10px;
+			border-right: 1px solid #bbb;
+		}
+
+		.cart-progress-step:last-child {
+			border-right: none;
+		}
+
+		.cart-progress-step.active {
+			background-color: #0078d7;
+			color: white;
+			font-weight: bold;
+		}
+		.back-to-cart {
+			margin-left:10px; 
+			margin-bottom: 15px; 
+			font-size:15pt;
+			color: #0078d7;
+			text-decoration: underline;
+		}
+
+		.customer-details, .order-details, .delivery-info, .payment-method {
+			border: 1px solid #e0e0e0;
+		    padding: 20px;
+		    border-radius: 20px;
+		    background-color: #f9f9f9;
+		    margin-left: 0px; /* Add some space between sections */
+			margin-top:20px;
+		}
+		
+		.product-details {
+			flex: 1;
+			place-items: center;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+
+		.product-details-text {
+			text-align: center; 
+			padding: 10px;
+		}
+		
+		.section-head {
+			border-bottom: 2px solid #545454; 
+			padding-bottom: 10px;
+		}
+		
+		.button {
+			display: block;
+			width: 100%;
+			background-color: #0078d7;
+			color: white;
+			border: none;
+			padding: 15px;
+			text-align: center;
+			border-radius: 8px;
+			text-decoration: none;
+			font-size: 16px;
+			cursor: pointer;
+			margin-top: 20px;
+		}
+
+		.button:hover {
+			background-color: #005bb5;
+			color: white;
+		}
+
+	.checkout-container {
+        display: flex;
+        justify-content: space-between;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+    }
+
+    .checkout-cart {
+        flex: 3; 
+        margin-right: 20px; /* Space between sections */
+    }
+
+    .order-summary {
+        flex: 1; 
+        border: 1px solid #e0e0e0;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+		margin-top:100px;
+    }
+
+	.help {
+		font-size: 18px;
+		font-weight: bold;
+		margin: 20px 0;
+	}
+
+	</style>
+	<link rel="stylesheet" th:href="@{/style.css}" type="text/css">
+</head>
+
+<body onload="showError()">
+	<div th:replace="fragments :: header"></div>
+	<!-- Progress Bar -->
+	<div class="cart-progress-bar">
+		<div class="cart-progress-step">Cart</div>
+		<div class="cart-progress-step active">Checkout</div>
+		<div class="cart-progress-step">Confirmation</div>
+	</div>
+
+	<!-- Main Container -->
+	<div class="checkout-container">
+		<!-- Shopping Cart Section -->
+		<div class="checkout-cart">
+			<h3>
+				<a href="/cart" class="link back-to-cart"><i class="fas fa-arrow-left"></i> Back to Cart</a>
+			</h3>
+			<h2 style = "margin-left:10px"><strong>CHECK OUT</strong></h2>
+
+			<form th:action="@{/checkout}" method="post">
+				<!-- Left Side Container -->
+				<!-- Customer Details Section -->
+				<div class="customer-details">
+					<h3 class="section-head">Customer Details</h3>
+					<div th:if="${customer != null}">
+						<p><strong>Name:</strong> <span th:text="${customer.getUsername()}"></span></p>
+						<p><strong>Email:</strong> <span th:text="${customer.getEmail()}"></span></p>
+						<p><strong>Phone number:</strong> <span th:text="${customer.getPhoneNumber()}"></span></p>
+						<p><strong>Shipping Address:</strong> <span th:text="${customer.getAddress()}"></span></p>
+					</div>
+				</div>
+
+				<!-- Order Summary Section -->
+				
+				<div class="order-details">
+					<h3 class="section-head">Order Details</h3>
+					<table class="order-details-table" style="width: 100%; border-collapse: collapse;">
+						<thead>
+							<tr>
+								<th style="text-align: left; border-bottom: 2px solid #e0e0e0; padding: 10px;">Product Details</th>
+								<th style="text-align: left; border-bottom: 2px solid #e0e0e0; padding: 10px;">Quantity</th>
+								<th style="text-align: left; border-bottom: 2px solid #e0e0e0; padding: 10px;">Unit Price</th>
+								<th style="text-align: left; border-bottom: 2px solid #e0e0e0; padding: 10px;">Total Price</th>
+							</tr>
+						</thead>
+						<tbody th:each="item : ${orderItems}">
+							<tr th:attr="data-product-id=${item.product.product_id}">
+								<td class="product-details" style="display: flex; align-items: center;">
+									<img th:src="@{/images/} + ${item.product.product_name} + '_1.jpg'" alt="Product Image" style="max-width: 100px; margin-right: 20px;">
+									<div>
+										<h4 th:text="${item.product.product_name}">Product Name</h4>
+										<p th:text="${item.product.product_description}">Product Description</p>
+									</div>
+								</td>
+								<div>
+								<td class="product-details-text quantity" th:text="${item.quantity}">0</td>
+								<td class="product-details-text salePrice" th:text="'S$' + ${item.product.sale_price}">S$0.00</td>
+								<td class="product-details-text totalEachPrice">S$0.00</td> <!-- Calculate total price -->
+								</div>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- Delivery Information -->
+				<div class="delivery-info">
+					<h3 class="section-head">Delivery Information</h3>
+					<p style="margin:0"><Strong>Standard delivery</Strong></p>
+					<p style="margin:0">In Stock - Typically, items in
+						stock are dispatched within 1 business day and will arrive at your
+						designated address within 3 to 5 business days.</p>
+				</div>
+				<!-- Payment Method Selection -->
+				 <div class="payment-method">
+				<h3 class="section-head">Select Payment Method</h3>
+				<form action="/checkout" method="post"> <!-- Form starts here -->
+					<div class="payment">
+						<div th:each="method : ${paymentMethods}" class="payment-item">
+							<label>
+								<input type="radio" th:value="${method}" name="paymentMethods" required />
+								<span th:text="${method.displayName}">displayName</span>
+								<img th:src="${method.imageUrl}" alt="Payment Method Image" style="width: 50px; height: auto; margin-left: 10px;" />
+							</label>
+						</div>
+					</div>
+				</div>
+					<!-- Optional: Add a link to return to the shop -->
+					<a href="/" class="btn btn-secondary mt-3">Continue Shopping</a>
+		</div>
+
+		<!-- Order Total Section on Right Side -->
+		<div class="order-summary">
+			<!-- Order Total Section -->
+			<h3 class="section-head">Payment Details</h3>
+			<p>Subtotal: <span class="product-price" th:text="'S$ '+ (${totalAmount}!= null ? ${#numbers.formatDecimal(totalAmount, 2, 2)} : '0.00')"
+					th:attr="data-th=#{subtotal}">S$0.00</span></p>
+			<p>Delivery: <span class="price price_green" th:text="FREE"></span></p>
+			<div class="total">
+				<strong style="color:black; font-size: 18px" class="stellar-body__medium" th:text="'Total Payment:'"></strong>
+				<strong><span class="price stellar-bold__large"
+						th:text="'S$ ' + (${totalAmount}!= null ? ${#numbers.formatDecimal(totalAmount, 2, 2)} : '0.00')">S$0.0</span></strong>
+			</div>
+			<div>
+				<p style="margin: 0; margin-top: 20px; font-size: 16px">
+				  <strong>Need Help?</strong>
+				</p>
+				<p style="margin: 0; font-size: 14px">Call 6123 6789</p>
+				<p style="margin: 0; font-size: 14px">
+				  Mon-Fri 8:30 am - 5:30 pm (excl. public holidays)
+				</p>
+			</div>
+
+			<!-- Submit Button -->
+			<div class="button-complete">
+			<button a href="/checkout" type="submit" class="button">Complete Purchase</button>
+			</div>
+		
+		</div>
+	</form>
+	</div>
+	<div th:replace="fragments :: footer"></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+	<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("DOM fully loaded and parsed");
+		removeQueryParam('processCheckOut');
+        calculateEachTotal(); // Calculate total when the page loads
+    });
+
+	function showError() {
+		  var errorMessage = "[[${errorMessage}]]";
+		  if (errorMessage) {
+			alert(errorMessage);
+		  }
+    };
+
+    function calculateEachTotal() {
+        console.log("calculateEachTotal() called");
+        const rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            // Get quantity and sale price from current row
+            let quantity = parseFloat(row.querySelector('.quantity').innerText);
+            let salePrice = parseFloat(row.querySelector('.salePrice').innerText.replace('S$', '').trim());
+
+            // Check values for debugging
+            console.log("Quantity:", quantity);
+            console.log("Sale Price:", salePrice);
+
+            // Calculate total price for this row
+            let totalEachPrice = quantity * salePrice;
+
+            // Format the result to two decimal places
+            totalEachPrice = totalEachPrice.toFixed(2);
+
+            // Display the result in the totalEachPrice cell of the current row
+            row.querySelector('.totalEachPrice').innerText = "S$" + totalEachPrice;
+        });
+    };
+
+	function removeQueryParam(param) {
+    const url = new URL(window.location.href); // Get the current URL
+    url.searchParams.delete(param); // Remove the specified parameter
+    window.history.pushState({}, '', url); // Update the browser's URL without reloading
+	}
+
+    </script>
+	<div th:replace="fragments :: scripts"></div>
+</body>
+</html>
+

@@ -1,0 +1,65 @@
+/* src/components/OrderCard.css */
+.order-card {
+  width: 80%; /* Keep the card width */
+  margin: 20px auto; /* Center the card */
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.order-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.order-summary {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+  gap: 20px; /* Add space between each order item */
+}
+
+.order-item {
+  display: flex;
+  flex-direction: row; /* Keep image and text in a row */
+  align-items: center; /* Align items vertically */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  gap: 20px; /* Space between image and text */
+  background-color: #f9f9f9; /* Light background for order items */
+}
+
+.product-image {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.action-button {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #e2e2e2;
+}

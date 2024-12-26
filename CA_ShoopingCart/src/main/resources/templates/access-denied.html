@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Error</title>
+<th:block th:replace="fragments :: head"></th:block>
+</head>
+<body>
+	<div class="content">
+		<h2 style="color: red;"> ACCESS DENIED!</h2>
+			<h2  style="color: red;">You do not have access to view this page! </h2>
+			<a th:href="@{/}">Back to Home Page</a>
+	</div>
+	<div th:replace="fragments :: footer"></div>
+<body>
+</body>
+</html>

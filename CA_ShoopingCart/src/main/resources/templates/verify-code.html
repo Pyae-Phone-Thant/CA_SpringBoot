@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Verify Code</title>
+    <th:block th:replace="fragments :: head"></th:block>
+    <link rel="stylesheet" th:href="@{/style.css}" type="text/css">
+    <script type="text/javascript">
+        function showError() {
+            var errorMessage = "[[${error}]]";
+            if (errorMessage && errorMessage !== "") {
+                alert(errorMessage);
+            }
+        }
+    </script>
+</head>
+
+<body onload="showError()">
+    <div th:replace="fragments :: header"></div>
+	<div class="content">
+    <div id="custom-form-login">
+        <form action="/password/verify" method="post">
+            <h1>Enter Verification Code</h1>
+
+            <input type="hidden" name="email" th:value="${email}" />
+
+            <div class="input-group">
+                <input class="custom-input" type="text" id="token" name="token" placeholder="Enter verification code" required>
+            </div>
+
+            <button type="submit" class="login-button">Verify Code</button>
+        </form>
+    </div>
+	</div>
+    <div th:replace="fragments :: scripts"></div>
+	<div th:replace="fragments :: footer"></div>
+</body>
+
+</html>

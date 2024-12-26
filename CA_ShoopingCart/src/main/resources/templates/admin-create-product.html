@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Create Product</title>
+	<th:block th:replace="fragments :: head"></th:block>
+</head>
+
+<body>
+	<div th:replace="admin-navbar.html :: adminNavigationBar"></div>
+	<div class="content container">
+		<h2>Create Product</h2>
+		<form th:action="@{/admin/create/product}" method="post" th:object="${product}" enctype="multipart/form-data">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="productName">Product Name</label>
+					<input type="text" class="form-control" id="productName" th:field="*{product_name}" required>
+					<span style="color: red;" th:if="${#fields.hasErrors('product_name')}"
+						th:errors="*{product_name}"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="quantity">Quantity</label>
+					<input type="number" class="form-control" id="quantity" th:field="*{quantity}" required>
+					<span style="color: red;" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="purchasePrice">Purchase Price</label>
+					<input type="number" step="0.01" class="form-control" id="purchasePrice"
+						th:field="*{purchase_price}" required>
+					<span style="color: red;" th:if="${#fields.hasErrors('purchase_price')}"
+						th:errors="*{purchase_price}"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="salePrice">Sale Price</label>
+					<input type="number" step="0.01" class="form-control" id="salePrice" th:field="*{sale_price}"
+						required>
+					<span style="color: red;" th:if="${#fields.hasErrors('sale_price')}"
+						th:errors="*{sale_price}"></span>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="productBrand">Brand</label>
+					<select class="form-control" id="productBrand" th:field="*{brand}" required>
+						<option value="" selected>Select a brand</option>
+						<option th:each="brand : ${brandsL}" th:value="${brand.brand_id}" th:text="${brand.brand_name}">
+						</option>
+					</select>
+					<span style="color: red;" th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="productCategory">Category</label>
+					<select class="form-control" id="productCategory" th:field="*{category}" required>
+						<option value="" selected>Select a category</option>
+						<option th:each="category : ${categoriesL}" th:value="${category.category_id}"
+							th:text="${category.category_name}">
+						</option>
+					</select>
+					<span style="color: red;" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></span>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="image2">Product Image 1</label>
+					<input hidden type="text" id="image_url" th:field="*{image_url}">
+					<input type="file" id="image1" name="image1" accept=".jpg">
+					<img id="image1Preview" class="img-preview" alt="Product Image"
+						style="width: 100px; height: auto;display: none;" />
+					<a id="deletePreviewImage1" style="text-decoration: none;color: red;cursor: pointer;display: none;"
+						onclick="deletePreviewImage(1)">Delete Image</a>
+					<img th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_1.jpg')}"
+						th:src="@{${'http://localhost:8080/images/'+product.product_name+'_1.jpg'}}" id="uploadedImage1"
+						class="uploaded-image" alt="Product Image" style="width: 100px; height: auto;" />
+					<a th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_1.jpg')}"
+						id="deleteUploadedImage1" style="text-decoration: none;color: red;cursor: pointer"
+						onclick="deleteUploadedImage(1)">Delete Image</a>
+					<span style="color: red;" th:if="${#fields.hasErrors('image_url')}" th:errors="*{image_url}"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="image2">Product Image 2</label>
+					<input type="file" id="image2" name="image2" accept=".jpg">
+					<img id="image2Preview" class="img-preview" alt="Product Image"
+						style="width: 100px; height: auto;display: none;" />
+					<a id="deletePreviewImage2" style="text-decoration: none;color: red;cursor: pointer;display: none;"
+						onclick="deletePreviewImage(2)">Delete Image</a>
+					<img th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_2.jpg')}"
+						th:src="@{${'http://localhost:8080/images/'+product.product_name+'_2.jpg'}}" id="uploadedImage2"
+						class="uploaded-image" alt="Product Image" style="width: 100px; height: auto;" />
+					<a th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_2.jpg')}"
+						id="deleteUploadedImage2" style="text-decoration: none;color: red;cursor: pointer"
+						onclick="deleteUploadedImage(2)">Delete Image</a>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="image3">Product Image 3</label>
+					<input type="file" id="image3" name="image3" accept=".jpg">
+					<img id="image3Preview" class="img-preview" alt="Product Image"
+						style="width: 100px; height: auto;display: none;" />
+					<a id="deletePreviewImage3" style="text-decoration: none;color: red;cursor: pointer;display: none;"
+						onclick="deletePreviewImage(3)">Delete Image</a>
+					<img th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_3.jpg')}"
+						th:src="@{${'http://localhost:8080/images/'+product.product_name+'_3.jpg'}}" id="uploadedImage3"
+						class="uploaded-image" alt="Product Image" style="width: 100px; height: auto;" />
+					<a th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_3.jpg')}"
+						id="deleteUploadedImage3" style="text-decoration: none;color: red;cursor: pointer"
+						onclick="deleteUploadedImage(3)">Delete Image</a>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="image4">Product Image 4</label>
+					<input type="file" id="image4" name="image4" accept=".jpg">
+					<img id="image4Preview" class="img-preview" alt="Product Image"
+						style="width: 100px; height: auto;display: none;" />
+					<a id="deletePreviewImage4" style="text-decoration: none;color: red;cursor: pointer;display: none;"
+						onclick="deletePreviewImage(4)">Delete Image</a>
+					<img th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_4.jpg')}"
+						th:src="@{${'http://localhost:8080/images/'+product.product_name+'_4.jpg'}}" id="uploadedImage4"
+						class="uploaded-image" alt="Product Image" style="width: 100px; height: auto;" />
+					<a th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_4.jpg')}"
+						id="deleteUploadedImage4" style="text-decoration: none;color: red;cursor: pointer"
+						onclick="deleteUploadedImage(4)">Delete Image</a>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="image5">Product Image 5</label>
+					<input type="file" id="image5" name="image5" accept=".jpg">
+					<img id="image5Preview" class="img-preview" alt="Product Image"
+						style="width: 100px; height: auto;display: none;" />
+					<a id="deletePreviewImage5" style="text-decoration: none;color: red;cursor: pointer;display: none;"
+						onclick="deletePreviewImage(5)">Delete Image</a>
+					<img th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_5.jpg')}"
+						th:src="@{${'http://localhost:8080/images/'+product.product_name+'_5.jpg'}}" id="uploadedImage5"
+						class="uploaded-image" alt="Product Image" style="width: 100px; height: auto;" />
+					<a th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_5.jpg')}"
+						id="deleteUploadedImage5" style="text-decoration: none;color: red;cursor: pointer"
+						onclick="deleteUploadedImage(5)">Delete Image</a>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="image6">Product Image 6</label>
+					<input type="file" id="image6" name="image6" accept=".jpg">
+					<img id="image6Preview" class="img-preview" alt="Product Image"
+						style="width: 100px; height: auto;display: none;" />
+					<a id="deletePreviewImage6" style="text-decoration: none;color: red;cursor: pointer;display: none;"
+						onclick="deletePreviewImage(6)">Delete Image</a>
+					<img th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_6.jpg')}"
+						th:src="@{${'http://localhost:8080/images/'+product.product_name+'_6.jpg'}}" id="uploadedImage6"
+						class="uploaded-image" alt="Product Image" style="width: 100px; height: auto;" />
+					<a th:if="${product.image_url!=null&&product.product_name!=null&&#strings.contains(product.image_url,product.product_name+'_6.jpg')}"
+						id="deleteUploadedImage6" style="text-decoration: none;color: red;cursor: pointer"
+						onclick="deleteUploadedImage(6)">Delete Image</a>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="productDescription">Product Description</label>
+					<textarea class="form-control" id="productDescription" th:field="*{product_description}"></textarea>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="productFeature">Features</label>
+					<textarea type="text" class="form-control" id="productFeature" th:field="*{product_feature}"
+						required></textarea>
+					<span style="color: red;" th:if="${#fields.hasErrors('product_feature')}"
+						th:errors="*{product_feature}"></span>
+				</div>
+			</div>
+			<!--<div class="form-row">
+				<div class="form-group">
+					<div class="img-preview">
+						<img th:src="@{${'http://localhost:8080/images/test_1.jpg'}}" alt="Product Image"
+							style="width: 100px; height: auto;" />
+							<br>
+						<a style="text-decoration: none;color: red;cursor: pointer;" onclick="deletePreviewImage(6)">Delete Image</a>
+					</div>
+					<input hidden type="text" id="image6Val" name="image6Val">
+				</div>
+			</div>-->
+			<div class="container" style="text-align: right;padding: 0px;">
+				<button type="button" onclick="location.href='http://localhost:8080/admin/productlist'"
+					class="btn btn-secondary text-right">Cancel</button>
+				<button type="submit" class="btn btn-success text-right">Add Product</button>
+			</div>
+
+		</form>
+	</div>
+	<script>
+		$(document).ready(function () {
+
+			// Event listener for file input change
+			$('#image1').on('change', function (e) {
+				showPreviewImage(e, 1);
+				addImageNameToImageUrl(1);
+			});
+			$('#image2').on('change', function (e) {
+				showPreviewImage(e, 2);
+				addImageNameToImageUrl(2);
+			});
+			$('#image3').on('change', function (e) {
+				showPreviewImage(e, 3);
+				addImageNameToImageUrl(3);
+			});
+			$('#image4').on('change', function (e) {
+				showPreviewImage(e, 4);
+				addImageNameToImageUrl(4);
+			});
+			$('#image5').on('change', function (e) {
+				showPreviewImage(e, 5);
+				addImageNameToImageUrl(5);
+			});
+			$('#image6').on('change', function (e) {
+				showPreviewImage(e, 6);
+				addImageNameToImageUrl(6);
+			});
+		});
+		function showPreviewImage(e, num) {
+			if ($('#image' + num + 'Added')) {
+				$('#image' + num + 'Added').hide();
+			}
+			const file = e.target.files[0]; // Get the selected file
+			const reader = new FileReader();
+
+			reader.onload = function (event) {
+				$('#image' + num + 'Preview').attr('src', event.target.result); // Set the image source to the uploaded file
+			};
+
+			if (file) {
+				reader.readAsDataURL(file); // Read the file as a data URL
+				$('#image' + num + 'Preview').show();
+				$('#deletePreviewImage' + num).show();
+			}
+			if ($('#uploadedImage' + num)) {
+				$('#uploadedImage' + num).removeAttr('src');
+				$('#uploadedImage' + num).hide();
+				$('#deleteUploadedImage' + num).hide();
+			}
+		}
+		function addImageNameToImageUrl(num) {
+			let imageList = $('#image_url').val() == '' || $('#image_url').val() == null ? [] : $('#image_url').val().split(",").map(item => item.trim());
+			if (!imageList.includes($('#productName').val() + '_' + num + '.jpg')) {
+				imageList.push($('#productName').val() + '_' + num + '.jpg');
+			}
+			$('#image_url').val(imageList.length > 0 ? imageList.join(",") : "");
+		}
+		function deletePreviewImage(num) {
+			$("#image" + num).val('');
+			$('#image' + num + 'Preview').removeAttr('src');
+			$('#image' + num + 'Preview').hide();
+			$('#deletePreviewImage' + num).hide();
+		}
+		function deleteUploadedImage(num) {
+			$("#image" + num).val('');
+			$('#uploadedImage' + num).removeAttr('src');
+			$('#uploadedImage' + num).hide();
+			$('#deleteUploadedImage' + num).hide();
+			let imageList = $('#image_url').val() == '' || $('#image_url').val() == null ? [] : $('#image_url').val().split(",").map(item => item.trim());
+			if (imageList.includes($('#productName').val() + '_' + num + '.jpg')) {
+				let index = imageList.indexOf($('#productName').val() + '_' + num + '.jpg');
+				if (index !== -1) {
+					imageList.splice(index, 1);
+				}
+			}
+			$('#image_url').val(imageList.length > 0 ? imageList.join(",") : "");
+		}
+	</script>
+	<div th:replace="fragments :: footer"></div>
+</body>
+
+</html>

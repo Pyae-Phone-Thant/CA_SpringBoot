@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Admin Dashboard</title>
+	<th:block th:replace="fragments :: head"></th:block>
+	<link rel="stylesheet" th:href="@{/style.css}" type="text/css">
+</head>
+
+<body>
+	<div th:replace="admin-navbar.html :: adminNavigationBar"></div>
+	<div class="content container admin-dashboard">
+		<h1 class="admin-dashboard-title">Admin Dashboard</h1>
+		<div class="admin-cards-container">
+			<!-- Total Products -->
+			<a th:href="@{/admin/productlist}" class="text-decoration-none">
+				<div class="admin-card card text-center bg-primary text-white">
+					<div class="card-body">
+						<i class="fas fa-box admin-card-icon"></i>
+						<h5 class="admin-card-title">Total Products</h5>
+						<p class="admin-card-value" th:text="${totalProducts}">0</p>
+					</div>
+				</div>
+			</a>
+
+			<!-- Total Categories -->
+			<a th:href="@{/admin/categorylist}" class="text-decoration-none">
+				<div class="admin-card card text-center bg-info text-white">
+					<div class="card-body">
+						<i class="fas fa-tags admin-card-icon"></i>
+						<h5 class="admin-card-title">Total Categories</h5>
+						<p class="admin-card-value" th:text="${totalCategories}">0</p>
+					</div>
+				</div>
+			</a>
+
+
+			<!-- Total Brands -->
+			<a th:href="@{/admin/brandlist}" class="text-decoration-none">
+				<div class="admin-card card text-center bg-secondary text-white">
+					<div class="card-body">
+						<i class="fas fa-industry admin-card-icon"></i>
+						<h5 class="admin-card-title">Total Brands</h5>
+						<p class="admin-card-value" th:text="${totalBrands}">0</p>
+					</div>
+				</div>
+			</a>
+
+			<!-- Total Reviews -->
+			<div class="admin-card card text-center bg-success text-white">
+				<div class="card-body">
+					<i class="fas fa-star admin-card-icon"></i>
+					<h5 class="admin-card-title">Total Reviews</h5>
+					<p class="admin-card-value" th:text="${totalReviews}">0</p>
+				</div>
+			</div>
+
+			<!-- Total Orders -->
+			<div class="admin-card card text-center bg-warning text-white">
+				<div class="card-body">
+					<i class="fas fa-shopping-cart admin-card-icon"></i>
+					<h5 class="admin-card-title">Total Orders</h5>
+					<p class="admin-card-value" th:text="${totalOrders}">0</p>
+				</div>
+			</div>
+
+			<!-- Total Users -->
+			<div class="admin-card card text-center bg-danger text-white">
+				<div class="card-body">
+					<i class="fas fa-users admin-card-icon"></i>
+					<h5 class="admin-card-title">Total Users</h5>
+					<p class="admin-card-value" th:text="${totalUsers}">0</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments :: footer"></div>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Profile</title>
+	<th:block th:replace="fragments :: head"></th:block>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        .profile-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding-left: 0;
+            width: 100%;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar ul li a.active, .sidebar ul li a:hover {
+            background-color: #e5e5e5;
+        }
+
+        .profile-avatar {
+			font-size: 5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .profile-avatar img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #e5e5e5;
+        }
+
+        .profile-content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-left: 20px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-info .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .profile-info label {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .profile-info input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-edit:hover {
+            background-color: #0056b3;
+        }
+    </style>
+	<script type="text/javascript">
+		function show() {
+			var errorMessage = "[[${error}]]";
+			if (errorMessage && errorMessage !== "") {
+				alert(errorMessage);
+			}
+			var successMessage = "[[${success}]]";
+			if (successMessage && successMessage !== "") {
+				alert(successMessage);
+
+		}
+		}
+	</script>
+</head>
+<body onload="show()">
+    <div th:replace="fragments :: header"></div>
+
+    <!-- Profile Container -->
+    <div class="content profile-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-avatar">
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </div>
+            <h3>Account Settings</h3>
+            <ul>
+                <li><a href="/view-profile" class="active">My Profile</a></li>
+                <li><a href="/change-password">Change Password</a></li>
+            </ul>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <h2>Personal Information</h2>    
+			<form id="setprofile" action="/view-profile" method="post" th:object="${customer}">
+            <div class="profile-info">
+                <div class="info-row">
+                    <label for="username">User Name:</label>
+                    <input type="text" id="name"  th:field="*{username}">
+					<div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></div>
+                </div>
+
+                <div class="info-row">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email"  th:field="*{email}">
+					<div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></div>
+                </div>
+
+                <div class="info-row">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" th:field="*{phoneNumber}">
+					<div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error-message"></div>
+                </div>
+
+                <div class="info-row">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address"  th:field="*{address}">
+					
+                </div>
+
+                <div class="info-row">
+                    <button type="submit" class="btn-edit">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div th:replace="fragments :: scripts"></div>
+	<div th:replace="fragments :: footer"></div>
+</body>
+</html>

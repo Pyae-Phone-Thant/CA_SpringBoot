@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Admin - Product List</title>
+	<th:block th:replace="fragments :: head"></th:block>
+</head>
+
+<body>
+	<!-- Include the admin navigation bar -->
+	<div th:replace="admin-navbar.html :: adminNavigationBar"></div>
+	<div id="successPopup" class="alert alert-success" role="alert" style="display:none;" th:text="${returnMessage}">
+	</div>
+	<div id="alertPopup" class="alert alert-warning" role="alert" style="display:none;" th:text="${returnAlertMessage}">
+	</div>
+	<div class="content container mt-2">
+		<h2>Product List</h2>
+		<table id="productTable" class="display" style="width:100%">
+			<thead>
+				<tr>
+					<th>Product ID</th>
+					<th>Product Name</th>
+					<th>Price</th>
+					<th>Stock</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="product : ${productList}">
+					<td th:text="${product.product_id}"></td>
+					<td th:text="${product.product_name}"></td>
+					<td th:text="${product.sale_price}"></td>
+					<td th:text="${product.quantity}"></td>
+					<td>
+						<a th:href="@{/admin/edit/product/{id}(id=${product.product_id})}"
+							class="btn btn-primary btn-sm">Edit</a>
+						<a th:href="@{/admin/delete/product/{id}(id=${product.product_id})}"
+							class="btn btn-danger btn-sm">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<script>
+		$(document).ready(function () {
+			var table = $('#productTable').DataTable({
+				"dom": '<"top"lf<"stock-filter">>rt<"bottom"ip><"clear">',
+				"searching": true,  // Enable searching
+				"paging": true,     // Enable pagination
+				"info": true,       // Display table information
+				"language": {
+					"search": "Search Product:",  // Customize search bar label
+				}
+			});
+
+			let stockFilterHTML = `
+			        <div class="d-flex justify-content-center" style="margin: 10px 0;">
+			            <div class="form-group mx-2">
+			                <label><input type="radio" name="stockFilter" value="all" checked> All</label>
+			            </div>
+			            <div class="form-group mx-2">
+			                <label><input type="radio" name="stockFilter" value="inStock"> In Stock</label>
+			            </div>
+			            <div class="form-group mx-2">
+			                <label><input type="radio" name="stockFilter" value="outOfStock"> Out of Stock</label>
+			            </div>
+			        </div>
+			    `;
+
+			// Append the radio buttons to the top of the DataTable
+			$('div.stock-filter').html(stockFilterHTML);
+
+
+			// Radio button filter logic
+			$('input[name="stockFilter"]').on('change', function () {
+				var filterValue = $(this).val();
+				table.draw();  // Redraw the table based on the filter
+			});
+
+			// Custom filter for stock status
+			$.fn.dataTable.ext.search.push(function (settings, data) {
+				var stock = parseInt(data[3]) || 0; // Column index 3: Quantity
+				var filterValue = $('input[name="stockFilter"]:checked').val();
+
+				if (filterValue === 'all') {
+					return true;
+				} else if (filterValue === 'inStock' && stock > 0) {
+					return true;
+				} else if (filterValue === 'outOfStock' && stock === 0) {
+					return true;
+				}
+				return false;
+			});
+			if ($('#successPopup').text().length > 0) {
+				$('#successPopup').show();
+				setTimeout(function () {
+					$("#successPopup").fadeOut();
+				}, 5000);
+			}
+			if ($('#alertPopup').text().length > 0) {
+				$('#alertPopup').show();
+				setTimeout(function () {
+					$("#alertPopup").fadeOut();
+				}, 10000);
+			}
+		});
+	</script>
+	<div th:replace="fragments :: footer"></div>
+</body>
+
+</html>

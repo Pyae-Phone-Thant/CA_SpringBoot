@@ -1,0 +1,31 @@
+/* src/components/OrderHistory.css */
+.order-history {
+    padding: 20px;
+    width: 100%;
+  }
+  
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .order-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .filter-bar select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  .order-history h2 {
+    margin-bottom: 20px;
+  }
+
+  .order-summary {
+    width: 100%
+  }

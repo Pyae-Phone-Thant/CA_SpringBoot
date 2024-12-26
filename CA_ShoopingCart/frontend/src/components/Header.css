@@ -1,0 +1,38 @@
+/* src/components/Header.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .header-logo {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 150px;
+  }
+  
+/*   .header-search {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .header-search input {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  } */
+  
+  .header-actions {
+    flex: 1;
+    display: flex;
+    justify-content:flex-end;
+    padding-right: 150px;
+    gap: 20px;
+  }
+  

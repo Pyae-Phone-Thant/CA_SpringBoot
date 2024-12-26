@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Connecting to PayPal</title>
+</head>
+<body>
+    <h1>Connecting to PayPal... Please waiting for a moment...</h1>
+    <form id="paypalForm" method="post" th:action="@{/checkout/paypal/pay}">
+        <!-- Form fields can be added here if necessary -->
+    </form>
+
+    <script type="text/javascript">
+        // Automatically submit the form when the page loads
+        window.onload = function() {
+            document.getElementById('paypalForm').submit();
+        };
+    </script>
+</body>
+</html>

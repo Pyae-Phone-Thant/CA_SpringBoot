@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Login</title>
+	<th:block th:replace="fragments :: head"></th:block>
+	<script type="text/javascript">
+		function show() {
+			var errorMessage = "[[${error}]]";
+			if (errorMessage && errorMessage !== "") {
+				alert(errorMessage);
+			}
+			var successMessage = "[[${success}]]";
+			if (successMessage && successMessage !== "") {
+				alert(successMessage);
+
+		}
+		}
+	</script>
+
+</head>
+
+<body onload="show()">
+	<div th:replace="fragments :: header"></div>
+	<div class="content">
+	<div id="custom-form-login">
+		<form action="/login/judge" method="post">
+			<h1>Login your account</h1>
+
+			<div class="input-group">
+				<input class="custom-input" type="text" id="emailLogIn" name="email" placeholder="Email" required>
+			</div>
+			<p></p>
+			<div class="input-group">
+				<input type="password" id="passwordLogIn" name="password" placeholder="Password" required>
+				<i class="icon-eye"></i> <!-- add the bottom of show password -->
+			</div>
+			<button type="submit" class="login-button">Log In</button>
+			<div class="extra-options">
+				<a href="/password/forgot" class="problem-link">Forgot Password</a>
+				<a href="/register" class="register-link">Register now</a>
+			</div>
+		</form>
+	</div>
+	</div>
+	<div th:replace="fragments :: scripts"></div>
+	<div th:replace="fragments :: footer"></div>
+</body>
+
+</html>

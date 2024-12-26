@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Product Review</title>
+	<th:block th:replace="fragments :: head"></th:block>
+</head>
+
+<body>
+	<div th:replace="fragments :: header"></div>
+	<div id="successPopup" class="alert alert-success" role="alert" style="display:none;">
+		<span id="addedReview" hidden th:text="${addedReview}"></span>
+		Review added successfully!
+	</div>
+	<div class="content container my-3" id="review-form">
+		<h3>Add Your Review</h3>
+		<form action="#" th:object="${productreview}" th:action="@{/product-review/add}" method="post">
+
+			<!-- Review Title -->
+			<div class="form-group">
+				<label for="reviewTitle">Review Title</label>
+				<input type="text" class="form-control" id="reviewTitle" name="review_title" th:field="*{review_title}"
+					th:value="*{review_title}">
+				<span style="color: red;" th:if="${#fields.hasErrors('review_title')}" th:errors="*{review_title}"></span>
+			</div>
+
+			<!-- Review Text -->
+			<div class="form-group">
+				<label for="reviewText">Your Review</label>
+				<textarea class="form-control" id="reviewText" name="review_text" rows="4" th:field="*{review_text}"
+					th:value="*{review_text}"></textarea>
+					<span style="color: red;" th:if="${#fields.hasErrors('review_text')}" th:errors="*{review_text}"></span>
+			</div>
+
+			<!-- Star Rating -->
+			<div class="form-group">
+				<label>Rating</label>
+				<div class="rating-stars">
+					<i class="fas fa-star selected" data-rating="1"></i>
+					<i class="fas fa-star selected" data-rating="2"></i>
+					<i class="fas fa-star selected" data-rating="3"></i>
+					<i class="fas fa-star selected" data-rating="4"></i>
+					<i class="fas fa-star selected" data-rating="5"></i>
+					<input hidden type="text" name="rating" id="rating" th:field="*{rating}" th:value="*{rating}">
+				</div>
+			</div>
+			<input type="hidden" th:field="*{customer.customerId}" />
+			<input hidden type="text" th:field="*{product.product_id}" th:value="*{product.product_id}" />
+			<!-- Submit Button -->
+			<button th:disabled="${session.userRole=='user'}" type="submit" class="btn btn-primary">Submit Review</button>
+		</form>
+		<div class="product-reviews-list">
+			<h3>Customer Reviews</h3>
+			<div class="row">
+				<div th:each="review : ${reviews}" class="col-12 col-md-6 col-lg-4 mb-4">
+					<div class="card mb-3">
+						<div class="card-header">
+							<strong th:text="${review.review_title}">Review Title</strong>
+							<span class="text-muted" th:text="${#temporals.format(review.created_date, 'yyyy-MM-dd HH:mm:ss')}"></span>
+						</div>
+						<div class="card-body">
+							<p th:text="${review.review_text}"></p>
+							<div class="stars">
+								<i class="fas fa-star" th:classappend="${review.rating >= 1} ? 'checked' : ''"></i>
+								<i class="fas fa-star" th:classappend="${review.rating >= 2} ? 'checked' : ''"></i>
+								<i class="fas fa-star" th:classappend="${review.rating >= 3} ? 'checked' : ''"></i>
+								<i class="fas fa-star" th:classappend="${review.rating >= 4} ? 'checked' : ''"></i>
+								<i class="fas fa-star" th:classappend="${review.rating >= 5} ? 'checked' : ''"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+	</div>
+
+	<div th:replace="fragments :: scripts"></div>
+	<div th:replace="fragments :: footer"></div>
+	<script>
+		$(document).ready(function () {
+
+			if ($("#addedReview").text() === "true") {
+				$("#successPopup").show();
+
+				// Hide the popup after 5 seconds (5000 ms)
+				setTimeout(function () {
+					$("#successPopup").fadeOut();
+				}, 5000);
+			}
+			// When hovering over a star
+			    $('.rating-stars .fa-star').on('mouseenter', function() {
+			        var index = $(this).data('index');
+			        $('.fa-star').each(function() {
+			            // Add 'hovered' class to all stars with a data-index less than or equal to the hovered star
+			            if ($(this).data('index') <= index) {
+			                $(this).addClass('hovered');
+			            } else {
+			                $(this).removeClass('hovered');
+			            }
+			        });
+			    });
+
+			    // When mouse leaves the rating stars
+			    $('.rating-stars').on('mouseleave', function() {
+			        $('.fa-star').removeClass('hovered');
+			    });
+
+			    // On click to select the stars
+			    $('.rating-stars .fa-star').on('click', function() {
+			        var index = $(this).data('index');
+			        $('.fa-star').each(function() {
+			            if ($(this).data('index') <= index) {
+			                $(this).addClass('selected');
+			            } else {
+			                $(this).removeClass('selected');
+			            }
+			        });
+			    });
+			$('#rating').val(5);
+			// Handle star rating selection
+			$('.rating-stars .fa-star').on('click', function () {
+				var rating = $(this).data('rating');
+				//alert(rating);
+				$('#rating').val(rating);
+				$('.rating-stars .fa-star').removeClass('selected');
+				$(this).addClass('selected');
+				$(this).prevAll().addClass('selected');
+			});
+		});
+	</script>
+</body>
+
+</html>

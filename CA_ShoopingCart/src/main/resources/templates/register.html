@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Register</title>
+	<th:block th:replace="fragments :: head"></th:block>
+	<script type="text/javascript">
+		function showSuccess() {
+			var successMessage = "[[${success}]]";
+			if (successMessage) {
+				alert(successMessage);
+			}
+		}
+	</script>
+</head>
+
+<body onload="showSuccess()">
+	<div th:replace="fragments :: header"></div>
+	<div class="content">
+	<div id="custom-form-register">
+		<form action="/register/judge" method="post" th:object="${customer}">
+			<h1>Register</h1>
+
+			<!-- Email field with validation -->
+			<div class="input-group">
+				<input class="custom-input" type="text" id="emailRegister" th:field="*{email}" placeholder="Email"
+					required>
+				<div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></div>
+			</div>
+			<p></p>
+
+			<!-- Username field with validation -->
+			<div class="input-group">
+				<input class="custom-input" type="text" id="usernameRegister" th:field="*{username}" placeholder="Name"
+					required>
+				<div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></div>
+			</div>
+			<p></p>
+
+			<!-- Phone number field -->
+			<div class="input-group">
+				<input class="custom-input" type="text" id="phoneNumber" th:field="*{phoneNumber}"
+					placeholder="Phone Number (optional)">
+				<i class="icon-eye"></i>
+				<div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error-message"></div>
+			</div>
+			<p></p>
+
+			<!-- Password field with validation -->
+			<div class="input-group">
+				<input type="password" id="passwordRegister" th:field="*{password}" placeholder="Enter your password"
+					required>
+				<i class="icon-eye"></i>
+				<div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></div>
+			</div>
+			<p></p>
+
+			<!-- Confirm password field -->
+			<div class="input-group">
+				<input type="password" id="passwordValid" name="passwordValid" placeholder="Enter your password again"
+					required>
+				<i class="icon-eye"></i>
+				<div th:if="${passwordMismatch}" class="error-message">Passwords do not match!</div>
+			</div>
+			<p></p>
+
+			<!-- Address field with validation -->
+			<div class="input-group">
+				<input class="custom-input" type="text" id="address" th:field="*{address}" placeholder="Address"
+					required>
+				<i class="icon-eye"></i>
+				<div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error-message"></div>
+			</div>
+
+			<button type="submit" class="login-button">Register</button>
+
+			<div class="extra-options-register">
+				<p>Already have an account?<a href="/login" class="problem-link"> Log in</a></p>
+			</div>
+		</form>
+	</div>
+	</div>
+	<div th:replace="fragments :: scripts"></div>
+	<div th:replace="fragments :: footer"></div>
+</body>
+
+</html>

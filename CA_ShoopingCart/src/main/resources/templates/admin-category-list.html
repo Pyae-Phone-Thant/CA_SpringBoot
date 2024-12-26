@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Admin - Category List</title>
+	<th:block th:replace="fragments :: head"></th:block>
+</head>
+
+<body>
+	<!-- Include the admin navigation bar -->
+	<div th:replace="admin-navbar.html :: adminNavigationBar"></div>
+	<div class="content">
+	<div id="successPopup" class="alert alert-success" role="alert" style="display:none;" th:text="${returnMessage}">
+	</div>
+	<div id="alertPopup" class="alert alert-warning" role="alert" style="display:none;" th:text="${returnAlertMessage}">
+	</div>
+	<div class="container">
+		<h2>Create Category</h2>
+		<form th:action="@{/admin/create/category}" method="post" th:object="${category}">
+			<div class="form-row">
+				<div class="form-group col-md-5">
+					<input placeholder="Category Name" type="text" class="form-control" id="categoryName" th:field="*{category_name}" required>
+					<span style="color: red;" th:if="${#fields.hasErrors('category_name')}"
+						th:errors="*{category_name}"></span>
+				</div>
+				<div class="form-group col-md-5">
+					<input placeholder="Category Description" type="text" class="form-control" id="categoryDescription" th:field="*{category_description}">
+					<span style="color: red;" th:if="${#fields.hasErrors('category_description')}"
+						th:errors="*{category_description}"></span>
+				</div>
+				<div class="form-group col-md-2">
+					<button style="margin-bottom: 10px;" type="submit" class="btn btn-success text-right">Add Category</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="container mt-2">
+		<h2>Category List</h2>
+		<table id="categoryTable" class="display" style="width:100%">
+			<thead>
+				<tr>
+					<th>Category ID</th>
+					<th>Category Name</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="category : ${categoryList}">
+					<td th:text="${category.category_id}"></td>
+					<td th:text="${category.category_name}"></td>
+					<td th:text="${category.category_description}"></td>
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<script>
+		$(document).ready(function () {
+			var table = $('#categoryTable').DataTable({
+				"searching": true,  // Enable searching
+				"paging": true,     // Enable pagination
+				"info": true,       // Display table information
+				"language": {
+					"search": "Search Category:",  // Customize search bar label
+				}
+			});
+			if ($('#successPopup').text().length > 0) {
+				$('#successPopup').show();
+				setTimeout(function () {
+					$("#successPopup").fadeOut();
+				}, 5000);
+			}
+			if ($('#alertPopup').text().length > 0) {
+				$('#alertPopup').show();
+				setTimeout(function () {
+					$("#alertPopup").fadeOut();
+				}, 10000);
+			}
+		});
+	</script>
+	</div>
+	<div th:replace="fragments :: footer"></div>
+</body>
+
+</html>

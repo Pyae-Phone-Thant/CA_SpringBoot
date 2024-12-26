@@ -1,0 +1,119 @@
+package sg.edu.nus.shoopingcart.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpSession;
+import sg.edu.nus.shoopingcart.interfacemethods.CartInterface;
+import sg.edu.nus.shoopingcart.model.CartItem;
+import sg.edu.nus.shoopingcart.service.CartImplementation;
+
+//Author; Siow Xiang Ying
+@Controller
+public class CartController {
+
+    @Autowired
+    private CartInterface cartService;
+
+    @Autowired
+    public void setCartService(CartImplementation cartImplementation) {
+        this.cartService = cartImplementation;
+    }
+    @GetMapping("/cart")
+    public String viewCart(HttpSession session, Model model) {
+
+        // Retrieve the cart items for the logged-in user
+        List<CartItem> cartItems = cartService.getCartItems((Long) session.getAttribute("userId"));
+
+        // Add cart items to the model to display in Thymeleaf
+        model.addAttribute("cartItems", cartItems);
+        
+        // Calculate and add the total price to the model - Not needed
+        double totalPrice = cartItems.stream()
+                .mapToDouble(item -> item.getQuantity() * item.getProduct().getSale_price()).sum();
+        int totalItems = !cartItems.isEmpty() ? cartItems.stream().mapToInt(item -> item.getQuantity()).sum() : 0;
+        session.setAttribute("totalItemsInCart", totalItems);
+        model.addAttribute("totalPrice", totalPrice);
+
+        // Check if there's an error message in the session
+        String errorMessage = (String) session.getAttribute("errorMessage");
+        System.out.println(errorMessage);
+
+        if (errorMessage != null) {
+            // Add the error message to the model
+            model.addAttribute("errorMessage", errorMessage);
+            session.removeAttribute("errorMessage");
+        }
+
+        return "cart"; // Thymeleaf template named "cart.html"
+    }
+
+    @PostMapping("/cart")
+    public String addItemToCart(@RequestParam("productId") int productId,
+                                @RequestParam("quantity") int quantity,
+                                HttpSession session) {
+        // Check if user is logged in
+        //if (session.getAttribute("userId") == null) {
+        //    return "redirect:/login";  // Redirect to login if not in session
+        //}
+
+        // Call service to add item to the cart
+        cartService.addItemToCart((Long) session.getAttribute("userId"), productId, quantity);
+
+        // Redirect to cart page after adding the item
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/cart/update-item")
+    public ResponseEntity<String> updateItemQuantity(
+            @RequestBody Map<String, Object> payload,
+            HttpSession session) {
+
+        // Retrieve product ID and quantity from the request body
+        int productId = (int) payload.get("productId");
+        int quantity = (int) payload.get("quantity");
+
+        // User ID from session. Interceptor already check if in session
+        Long userId = (Long) session.getAttribute("userId");
+
+        // Update the item quantity in the cart
+        cartService.updateItemQuantityInCart(userId, productId, quantity);
+        
+        List<CartItem> cartItems = cartService.getCartItems(userId);
+        int totalItems=!cartItems.isEmpty()? cartItems.stream().mapToInt(item->item.getQuantity()).sum():0;
+        session.setAttribute("totalItemsInCart", totalItems);
+
+        return ResponseEntity.ok("Quantity updated successfully");
+    }
+
+    @PostMapping("/cart/remove-item")
+    public ResponseEntity<Void> removeItemFromCart(@RequestBody Map<String, Integer> payload, HttpSession session) {
+    Integer productId = payload.get("productId");
+
+    // Get the user's active cart using the session.  Interceptor already check if in session
+    Long userId = (Long) session.getAttribute("userId");
+    //if (userId == null) {
+    //    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Unauthorized if not logged in
+    //}
+
+    // Call the service to remove the item from the cart
+    cartService.removeItemFromCart(userId, productId);
+    List<CartItem> cartItems = cartService.getCartItems(userId);
+    int totalItems=!cartItems.isEmpty()? cartItems.stream().mapToInt(item->item.getQuantity()).sum():0;
+    session.setAttribute("totalItemsInCart", totalItems);
+
+    // Return a success response
+    return ResponseEntity.ok().build();
+}
+
+
+}
